@@ -1,0 +1,28 @@
+/* Reset default browser margins */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000000; /* Dark theme base */
+    overflow: hidden; /* Prevents scrollbars if particles go off-screen */
+    font-family: sans-serif;
+}
+
+/* Ensure the container takes full height/width 
+*/
+#canvas-container {
+    width: 100vw;
+    height: 100vh;
+    display: block;
+}
+
+/* Hide the webcam element.
+   We want the data from the camera, but we don't want to see the video feed.
+*/
+#webcam {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0; 
+    height: 0;
+    opacity: 0;
+}

@@ -1,28 +1,109 @@
-/* Reset default browser margins */
+/* Reset & Base */
 body {
     margin: 0;
     padding: 0;
-    background-color: #000000; /* Dark theme base */
-    overflow: hidden; /* Prevents scrollbars if particles go off-screen */
-    font-family: sans-serif;
+    background-color: #000000;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace; /* Tech vibe */
 }
 
-/* Ensure the container takes full height/width 
-*/
 #canvas-container {
     width: 100vw;
     height: 100vh;
     display: block;
 }
 
-/* Hide the webcam element.
-   We want the data from the camera, but we don't want to see the video feed.
-*/
 #webcam {
     position: absolute;
     top: 0;
     left: 0;
-    width: 0; 
-    height: 0;
-    opacity: 0;
+    opacity: 0; /* Hidden */
+    pointer-events: none;
+}
+
+/* --- THE CONTROL PANEL --- */
+.panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 280px;
+    background: rgba(20, 20, 20, 0.7); /* Semi-transparent dark */
+    backdrop-filter: blur(10px); /* The "Glass" effect */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    user-select: none;
+}
+
+.header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #44aaff;
+}
+
+.status {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
+.status.active { color: #00ff00; }
+
+.control-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+/* --- BUTTONS --- */
+.button-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+button {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+button.active {
+    background: #44aaff;
+    color: black;
+    border-color: #44aaff;
+    font-weight: bold;
+}
+
+/* --- SLIDERS --- */
+input[type=range] {
+    width: 100%;
+    accent-color: #44aaff;
+    background: transparent;
+    cursor: pointer;
 }

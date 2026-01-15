@@ -3,119 +3,201 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 /* =========================================
    GLOBAL VARIABLES
-   We keep these accessible so different functions can use them.
    ========================================= */
 let scene, camera, renderer, controls;
-let particlesMesh; // This will hold our cloud of points
-
-// Configuration Settings
+let particlesMesh; 
 const PARTICLE_COUNT = 20000;
 const PARTICLE_SIZE = 0.5;
 
+// Data structures to store the shapes
+// Each array will hold 60,000 numbers (20,000 particles * x,y,z)
+const particles = {
+    initial: [],
+    sphere: [],
+    heart: [],
+    cube: [],
+    spiral: []
+};
+
+// State
+let currentShape = 'sphere'; // Default shape
+
 /* =========================================
-   INIT: THE SETUP
-   This runs once when the page loads.
+   INIT
    ========================================= */
 function init() {
-    // 1. Create the Scene (The container for all 3D objects)
     scene = new THREE.Scene();
-    // Add some soft fog to fade distant particles (aesthetic touch)
     scene.fog = new THREE.FogExp2(0x000000, 0.002);
 
-    // 2. Create the Camera (The Eye)
-    // PerspectiveCamera(FieldOfView, AspectRatio, NearClip, FarClip)
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 200; // Move camera back so we can see the center
+    camera.position.z = 300; // Moved back a bit to see larger shapes
 
-    // 3. Create the Renderer ( The Painter)
-    // This takes the scene and draws it onto the <canvas>
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio); // Sharpness on high-res screens
-    
-    // Attach the renderer's canvas to our HTML div
+    renderer.setPixelRatio(window.devicePixelRatio);
     document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-    // 4. Add Controls (Mouse interaction)
-    // Allows you to rotate and zoom with the mouse
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // Adds a smooth "weight" to the movement
+    controls.enableDamping = true;
 
-    // 5. Create the Particles
+    // 1. Calculate all shape positions BEFORE creating the mesh
+    calculateShapes();
+
+    // 2. Create the particles based on the calculation
     createParticles();
 
-    // 6. Handle Window Resizing
-    // If the user stretches the window, we need to adjust the camera
-    window.addEventListener('resize', onWindowResize);
+    // 3. Add Event Listener for keys (Temporary Testing)
+    window.addEventListener('keydown', onKeyDown);
 
-    // 7. Start the Animation Loop
+    window.addEventListener('resize', onWindowResize);
     animate();
 }
 
 /* =========================================
-   CREATE PARTICLES
-   Generates 20,000 points at random positions
+   SHAPE CALCULATIONS (The Math)
    ========================================= */
-function createParticles() {
-    // A. Geometry: Holds the data (positions)
-    const geometry = new THREE.BufferGeometry();
+function calculateShapes() {
+    
+    // We create temporary arrays to hold the positions
+    const spherePos = [];
+    const cubePos = [];
+    const heartPos = [];
+    const spiralPos = [];
 
-    // We need 3 coordinates (x, y, z) for every single particle
-    // Float32Array is a typed array optimized for WebGL
-    const positions = new Float32Array(PARTICLE_COUNT * 3);
-
-    // Loop 20,000 times to set random starting positions
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const i3 = i * 3; // Index for the array (0, 3, 6, 9...)
         
-        // Random position between -100 and +100
-        positions[i3] = (Math.random() - 0.5) * 500;     // x
-        positions[i3 + 1] = (Math.random() - 0.5) * 500; // y
-        positions[i3 + 2] = (Math.random() - 0.5) * 500; // z
+        // --- SPHERE FORMULA ---
+        // Radius of 100
+        const r = 100;
+        const theta = 2 * Math.PI * Math.random(); // Angle around Y
+        const phi = Math.acos(2 * Math.random() - 1); // Angle from pole
+        
+        const sx = r * Math.sin(phi) * Math.cos(theta);
+        const sy = r * Math.sin(phi) * Math.sin(theta);
+        const sz = r * Math.cos(phi);
+        spherePos.push(sx, sy, sz);
+
+        // --- CUBE FORMULA ---
+        // Random point inside a box of size 200 (-100 to 100)
+        const amount = 100;
+        const cx = (Math.random() - 0.5) * 2 * amount;
+        const cy = (Math.random() - 0.5) * 2 * amount;
+        const cz = (Math.random() - 0.5) * 2 * amount;
+        cubePos.push(cx, cy, cz);
+
+        // --- HEART FORMULA ---
+        // A variation of the Swiss Army Knife Heart equation
+        // We scale it up by 5 to make it visible
+        const scale = 5; 
+        // We need a distribution, so we just calculate a parametric point
+        // But for a volume, we can use rejection sampling, or just a surface.
+        // Let's use a simple 3D parametric heart curve:
+        const t = Math.random() * Math.PI * 2; // 0 to 360
+        // We add some random variation to fill the volume, not just the outline
+        const h_r = (Math.random() * 0.5 + 0.5); // Random radius variation
+
+        // Classic Heart Formula
+        const hx = 16 * Math.pow(Math.sin(t), 3);
+        const hy = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+        const hz = Math.random() * 6 - 3; // Thickness in Z
+
+        // Scale and randomize slightly to make it a "cloud"
+        heartPos.push(hx * scale * h_r, hy * scale * h_r, hz * scale * 5);
+
+
+        // --- SPIRAL FORMULA ---
+        // A helix
+        const spiralRadius = 50;
+        const spiralHeight = 400; // Total height
+        const turns = 5; 
+        
+        // 'y' goes from -200 to +200
+        const y_spiral = (Math.random() - 0.5) * spiralHeight; 
+        // The angle depends on the height (this creates the twist)
+        const angle = (y_spiral / spiralHeight) * Math.PI * 2 * turns;
+        
+        const spx = spiralRadius * Math.cos(angle) + (Math.random()-0.5)*20; // Add noise
+        const spz = spiralRadius * Math.sin(angle) + (Math.random()-0.5)*20;
+        
+        spiralPos.push(spx, y_spiral, spz);
     }
 
-    // Tell Three.js that this data represents 'position'
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    // Store these in our global object
+    particles.sphere = new Float32Array(spherePos);
+    particles.cube = new Float32Array(cubePos);
+    particles.heart = new Float32Array(heartPos);
+    particles.spiral = new Float32Array(spiralPos);
+}
 
-    // B. Material: Holds the look (color, size, glowing)
+/* =========================================
+   CREATE PARTICLES
+   ========================================= */
+function createParticles() {
+    const geometry = new THREE.BufferGeometry();
+
+    // Start with the SPHERE shape by default
+    geometry.setAttribute('position', new THREE.BufferAttribute(particles.sphere, 3));
+
     const material = new THREE.PointsMaterial({
-        color: 0xffffff,        // White
-        size: PARTICLE_SIZE,    // Size of each dot
-        transparent: true,      // Allow transparency
-        opacity: 0.8,           // Slightly see-through
-        blending: THREE.AdditiveBlending, // Makes overlapping particles glow brighter
-        depthWrite: false       // Prevents weird sorting glitches with transparent particles
+        color: 0xffffff,
+        size: PARTICLE_SIZE,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
     });
 
-    // C. Mesh: Combines Geometry + Material
     particlesMesh = new THREE.Points(geometry, material);
-    
-    // Add it to the scene
     scene.add(particlesMesh);
 }
 
 /* =========================================
-   ANIMATE LOOP
-   Runs 60 times per second to update the screen
+   KEYBOARD TESTING
+   Press 1, 2, 3, 4 to switch shapes instantly
    ========================================= */
-function animate() {
-    requestAnimationFrame(animate); // Recursively call this function
-
-    // Optional: Slowly rotate the whole cloud for effect
-    particlesMesh.rotation.y += 0.001; 
-
-    controls.update(); // Update mouse controls damping
-    renderer.render(scene, camera); // Draw the frame
+function onKeyDown(event) {
+    const geometry = particlesMesh.geometry;
+    
+    switch(event.key) {
+        case '1':
+            console.log("Switching to Sphere");
+            geometry.setAttribute('position', new THREE.BufferAttribute(particles.sphere, 3));
+            break;
+        case '2':
+            console.log("Switching to Cube");
+            geometry.setAttribute('position', new THREE.BufferAttribute(particles.cube, 3));
+            break;
+        case '3':
+            console.log("Switching to Heart");
+            geometry.setAttribute('position', new THREE.BufferAttribute(particles.heart, 3));
+            break;
+        case '4':
+            console.log("Switching to Spiral");
+            geometry.setAttribute('position', new THREE.BufferAttribute(particles.spiral, 3));
+            break;
+    }
+    
+    // IMPORTANT: Tell Three.js the position data has changed
+    geometry.attributes.position.needsUpdate = true;
 }
 
 /* =========================================
-   RESIZE HELPER
+   ANIMATE LOOP
    ========================================= */
+function animate() {
+    requestAnimationFrame(animate);
+    
+    // Rotate the whole shape slowly
+    particlesMesh.rotation.y += 0.002;
+
+    controls.update();
+    renderer.render(scene, camera);
+}
+
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// Kickstart the app!
 init();

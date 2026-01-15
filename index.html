@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Wuhhuu Touch | Magical Edition</title>
+    <title>Wuhhuu Touch | Ultimate Magic</title>
     <link rel="stylesheet" href="style.css">
     
     <script type="importmap">
@@ -18,8 +18,26 @@
 </head>
 <body>
     <div id="canvas-container"></div>
+    
     <video id="webcam" autoplay playsinline></video>
     
+<div class="magical-guide">
+    <h3>HOW TO CAST SPELLS</h3>
+
+    <div class="divider">⋆˚.˚ ꩜｡</div>
+
+    <div class="instruction-row">
+        <span class="icon">✊</span>
+        <span class="text"><strong>HOLD FIST</strong> to gather energy</span>
+    </div>
+
+    <div class="instruction-row">
+        <span class="icon">🖐</span>
+        <span class="text"><strong>RELEASE FAST</strong> to blast magic</span>
+    </div>
+</div>
+
+
     <div class="panel">
         <div class="header">
             <h2>WUHHUU MAGIC</h2>
@@ -37,17 +55,17 @@
         </div>
 
         <div class="control-group">
-            <label>GLOW STRENGTH</label>
+            <label>GLOW INTENSITY</label>
             <input type="range" id="slider-bloom" min="0" max="3" step="0.1" value="1.5">
         </div>
 
         <div class="control-group">
-            <label>RETURN SPEED</label>
+            <label>MAGIC SPEED</label>
             <input type="range" id="slider-speed" min="0.03" max="0.3" step="0.01" value="0.08">
         </div>
 
         <div class="control-group">
-            <label>BLAST FORCE</label>
+            <label>BLAST POWER</label>
             <input type="range" id="slider-force" min="2" max="15" step="1" value="8">
         </div>
     </div>

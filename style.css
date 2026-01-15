@@ -2,9 +2,9 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #000000;
+    background-color: #050505; /* Deep black */
     overflow: hidden;
-    font-family: 'Courier New', Courier, monospace; /* Tech vibe */
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 #canvas-container {
@@ -15,95 +15,75 @@ body {
 
 #webcam {
     position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0; /* Hidden */
-    pointer-events: none;
+    top: 0; right: 0;
+    opacity: 0; pointer-events: none;
 }
 
-/* --- THE CONTROL PANEL --- */
+/* --- GLASS PANEL --- */
 .panel {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 280px;
-    background: rgba(20, 20, 20, 0.7); /* Semi-transparent dark */
-    backdrop-filter: blur(10px); /* The "Glass" effect */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 20px;
+    top: 20px; right: 20px;
+    width: 260px;
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(12px); /* Strong blur */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 24px;
     color: white;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    user-select: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transition: opacity 0.3s;
+}
+
+/* Hide panel on mobile to save space, or make it smaller */
+@media (max-width: 600px) {
+    .panel { width: 200px; padding: 15px; transform: scale(0.8); origin: top right; }
 }
 
 .header {
-    margin-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 10px;
+    padding-bottom: 12px; margin-bottom: 16px;
+    text-align: center;
 }
 
 h2 {
-    margin: 0;
+    margin: 0; font-weight: 800; letter-spacing: 3px;
+    background: linear-gradient(90deg, #ff00cc, #3333ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-size: 18px;
-    letter-spacing: 2px;
-    color: #44aaff;
 }
 
 .status {
-    font-size: 12px;
-    color: #888;
-    margin-top: 5px;
+    font-size: 11px; color: #aaa; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px;
 }
-
-.status.active { color: #00ff00; }
-
-.control-group {
-    margin-bottom: 20px;
-}
+.status.active { color: #00ffaa; text-shadow: 0 0 5px #00ffaa; }
 
 label {
-    display: block;
-    font-size: 11px;
-    color: #888;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
+    display: block; font-size: 10px; color: #888;
+    margin-bottom: 8px; font-weight: 700; letter-spacing: 1px;
 }
 
-/* --- BUTTONS --- */
-.button-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
+.button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
 
 button {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 8px;
-    font-family: inherit;
-    font-size: 11px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white; padding: 10px;
+    font-size: 10px; font-weight: 600; cursor: pointer;
+    border-radius: 6px; transition: 0.2s;
 }
-
-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
+button:hover { background: rgba(255,255,255,0.15); transform: translateY(-1px); }
 button.active {
-    background: #44aaff;
-    color: black;
-    border-color: #44aaff;
-    font-weight: bold;
+    background: linear-gradient(45deg, #ff00cc, #3333ff);
+    border: none; box-shadow: 0 0 10px rgba(51, 51, 255, 0.5);
 }
 
-/* --- SLIDERS --- */
 input[type=range] {
-    width: 100%;
-    accent-color: #44aaff;
-    background: transparent;
-    cursor: pointer;
+    width: 100%; height: 4px; background: #333;
+    border-radius: 2px; outline: none; margin-bottom: 20px; appearance: none;
+}
+input[type=range]::-webkit-slider-thumb {
+    appearance: none; width: 16px; height: 16px;
+    background: white; border-radius: 50%; cursor: pointer;
+    box-shadow: 0 0 10px white;
 }

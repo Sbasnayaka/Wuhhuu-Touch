@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wuuhhuu Touch | Hand Tracking Particles</title>
-    
+    <title>Wuhhuu Touch | Interactive 3D Particles</title>
     <link rel="stylesheet" href="style.css">
-
     <script type="importmap">
     {
         "imports": {
@@ -18,12 +16,15 @@
     </script>
 </head>
 <body>
-
     <div id="canvas-container"></div>
-
     <video id="webcam" autoplay playsinline></video>
+    
+    <div style="position: absolute; top: 20px; left: 20px; color: white; font-family: sans-serif; pointer-events: none;">
+        <h1>Wuhhuu Touch</h1>
+        <p>Press 1: Sphere | 2: Cube | 3: Heart | 4: Star</p>
+        <p>🖐 Open Hand: Push | ✊ Fist: Pull</p>
+    </div>
 
     <script type="module" src="main.js"></script>
-
 </body>
 </html>

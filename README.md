@@ -149,8 +149,22 @@ This project was built as a **Learning Experiment** in collaboration with Genera
 
 ---
 
-### 🌟 Star this repo if you find it magical!
 
-```
+## 🌟 Features Breakdown
 
-```
+* **Dynamic Particles:** 30,000 individual points.
+* **Reactive Colors:** Particles turn White/Gold when moving fast (high energy) and cool down to Blue/Purple when stationary.
+* **4 Shapes:**
+* **Sphere:** The default cloud.
+* **Heart:** A volumetric 3D heart.
+* **Star:** A sharp, geometric 5-point star.
+* **Cube:** A structured box.
+
+
+* **Responsive:** Auto-rotates when idle, locks control when a hand is detected.
+
+---
+
+### License
+
+This project is open source. Feel free to use it to learn!

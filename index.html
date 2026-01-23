@@ -21,24 +21,28 @@
     
     <video id="webcam" autoplay playsinline></video>
     
-<div class="magical-guide">
-    <h3>HOW TO CAST SPELLS</h3>
+    <button id="mobile-toggle" onclick="toggleMobileMenu()">⚙️ MAGIC SETTINGS</button>
 
-    <div class="divider">⋆˚.˚ ꩜｡</div>
+    <div class="magical-guide">
+        <h3>HOW TO CAST SPELLS</h3>
 
-    <div class="instruction-row">
-        <span class="icon">✊</span>
-        <span class="text"><strong>HOLD FIST</strong> to gather energy</span>
+        <div class="divider">⋆˚.˚ ꩜｡</div>
+
+        <div class="instruction-row">
+            <span class="icon">✊</span>
+            <span class="text"><strong>HOLD FIST</strong> to gather energy</span>
+        </div>
+
+        <div class="instruction-row">
+            <span class="icon">🖐</span>
+            <span class="text"><strong>RELEASE FAST</strong> to blast magic</span>
+        </div>
     </div>
 
-    <div class="instruction-row">
-        <span class="icon">🖐</span>
-        <span class="text"><strong>RELEASE FAST</strong> to blast magic</span>
-    </div>
-</div>
 
+    <div class="panel" id="control-panel">
+        <button class="mobile-close-btn" onclick="toggleMobileMenu()">×</button>
 
-    <div class="panel">
         <div class="header">
             <h2>WUHHUU MAGIC</h2>
             <div class="status" id="hand-status">Waiting for Hand...</div>
@@ -71,5 +75,12 @@
     </div>
 
     <script type="module" src="main.js"></script>
+
+    <script>
+        function toggleMobileMenu() {
+            const panel = document.getElementById('control-panel');
+            panel.classList.toggle('mobile-visible');
+        }
+    </script>
 </body>
 </html>

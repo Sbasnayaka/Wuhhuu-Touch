@@ -40,6 +40,7 @@ body {
     border: 1px solid rgba(170, 80, 255, 0.25);
 
     animation: floatMagic 6s ease-in-out infinite;
+    z-index: 10;
 }
 
 @keyframes floatMagic {
@@ -92,7 +93,7 @@ body {
 }
 
 
-/* --- GLASS PANEL (Top Right) --- */
+/* --- GLASS PANEL (Top Right - Desktop Default) --- */
 .panel {
     position: absolute;
     top: 20px; right: 20px;
@@ -104,14 +105,84 @@ body {
     padding: 20px;
     color: white;
     box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    z-index: 20;
+    transition: all 0.3s ease;
 }
 
-/* Mobile Responsive */
+/* Hidden by default elements */
+#mobile-toggle { display: none; }
+.mobile-close-btn { display: none; }
+
+
+/* --- MOBILE RESPONSIVE DESIGN --- */
 @media (max-width: 600px) {
-    .panel { display: none; } /* Hide controls on mobile to focus on magic */
-    .magical-guide { width: 80%; font-size: 12px; }
+    
+    /* 1. Show the Mobile Settings Button */
+    #mobile-toggle {
+        display: block;
+        position: absolute;
+        top: 20px;
+        left: 20px; /* Left side to not block right-handed interactions usually */
+        z-index: 30;
+        background: rgba(20, 10, 40, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(170, 80, 255, 0.3);
+        color: #e0b3ff;
+        padding: 10px 15px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        cursor: pointer;
+        box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    /* 2. Hide Panel by default on Mobile */
+    .panel { 
+        display: block; /* We keep display block but transform it */
+        top: 50%; left: 50%; right: auto;
+        transform: translate(-50%, -50%) scale(0.9);
+        width: 80%;
+        max-width: 320px;
+        opacity: 0;
+        pointer-events: none;
+        background: rgba(10, 5, 20, 0.95); /* Darker background for readability */
+        box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        border: 1px solid rgba(170, 80, 255, 0.4);
+    }
+
+    /* 3. Show Panel when 'mobile-visible' class is added via JS */
+    .panel.mobile-visible {
+        opacity: 1;
+        pointer-events: all;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* 4. Close Button inside the panel */
+    .mobile-close-btn {
+        display: block;
+        position: absolute;
+        top: 10px; right: 10px;
+        background: none; border: none;
+        color: #888;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        padding: 5px;
+    }
+    .mobile-close-btn:hover { color: white; }
+
+    /* 5. Adjust Guide for Mobile */
+    .magical-guide { 
+        width: 85%; 
+        padding: 15px 20px;
+        bottom: 20px;
+    }
+    .magical-guide h3 { font-size: 11px; }
+    .instruction-row { font-size: 12px; }
 }
 
+/* --- GENERAL UI STYLES --- */
 .header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 10px; margin-bottom: 15px;
